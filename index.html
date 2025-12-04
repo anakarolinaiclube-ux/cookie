@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CookMe – Assistente de Refeições AI</title>
+    
+    <!-- Fonte Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Biblioteca para PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <!-- Ícones FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            black: '#1a1a1a',
+                            orange: '#F97316',
+                            darkOrange: '#C2410C',
+                            light: '#F3F4F6',
+                            gray: '#9CA3AF'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #ffffff;
+            color: #1a1a1a;
+            -webkit-font-smoothing: antialiased;
+        }
+        .fade-in {
+            animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .loader-dots div {
+            animation-timing-function: cubic-bezier(0, 1, 1, 0);
+        }
+        .loader-dots div:nth-child(1) { left: 8px; animation: loader-dots1 0.6s infinite; }
+        .loader-dots div:nth-child(2) { left: 8px; animation: loader-dots2 0.6s infinite; }
+        .loader-dots div:nth-child(3) { left: 32px; animation: loader-dots2 0.6s infinite; }
+        .loader-dots div:nth-child(4) { left: 56px; animation: loader-dots3 0.6s infinite; }
+        @keyframes loader-dots1 {
+            0% { transform: scale(0); }
+            100% { transform: scale(1); }
+        }
+        @keyframes loader-dots3 {
+            0% { transform: scale(1); }
+            100% { transform: scale(0); }
+        }
+        @keyframes loader-dots2 {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(24px, 0); }
+        }
+    </style>
+</head>
+
+<body class="flex flex-col min-h-screen">
+
+    <!-- Navbar -->
+    <nav class="w-full py-6 px-6 md:px-12 flex justify-between items-center max-w-7xl mx-auto">
+        <div class="text-2xl font-bold tracking-tight flex items-center gap-2 cursor-pointer" onclick="location.reload()">
+            <i class="fa-solid fa-fire-burner text-brand-orange"></i> 
+            <span>CookMe</span>
+        </div>
+        <div class="hidden md:block text-sm font-medium text-gray-400">
+            Powered by AI
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section id="landing-page" class="flex-grow flex flex-col items-center justify-center text-center px-6 fade-in mb-10">
+        <div class="max-w-3xl space-y-8">
+            <h1 class="text-5xl md:text-6xl font-bold leading-tight tracking-tight text-brand-black">
+                Transforme ingredientes em <br>
+                <span class="text-brand-orange">refeições incríveis.</span>
+            </h1>
+            <p class="text-gray-500 text-lg md:text-xl max-w-xl mx-auto font-light">
+                Digite o que você tem na geladeira e nossa Inteligência Artificial cria receitas automáticas para você.
+            </p>
+            <button onclick="goToDashboard()" class="mt-8 px-10 py-5 bg-brand-black text-white rounded-full font-semibold text-lg hover:bg-brand-orange transition-all transform hover:scale-105 shadow-xl hover:shadow-brand-orange/20">
+                Começar agora <i class="fa-solid fa-arrow-right ml-2"></i>
+            </button>
+        </div>
+    </section>
+
+    <!-- DASHBOARD -->
+    <section id="dashboard" class="hidden max-w-6xl mx-auto px-4 py-8 w-full fade-in pb-24">
+
+        <div class="bg-gray-50 rounded-[2rem] p-8 md:p-12 shadow-sm border border-gray-100 mb-16 text-center">
+            <h2 class="text-2xl md:text-3xl font-bold mb-6">O que tem na sua cozinha hoje?</h2>
+            <div class="relative max-w-2xl mx-auto">
+                <input type="text" id="ingredients-input" 
+                    placeholder="Ex: frango, arroz, tomate..."
+                    class="w-full p-5 pl-8 rounded-full border border-gray-200 shadow-sm text-lg"
+                    onkeypress="handleEnter(event)">
+                <button onclick="suggestRecipes()" class="absolute right-2 top-2 bottom-2 bg-brand-orange text-white px-6 rounded-full font-medium">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                </button>
+            </div>
+        </div>
+
+        <div id="loading" class="hidden flex-col items-center justify-center py-20">
+            <div class="loader-dots relative w-20 h-5 mb-4">
+                <div class="absolute top-0 w-3 h-3 rounded-full bg-brand-orange"></div>
+                <div class="absolute top-0 w-3 h-3 rounded-full bg-brand-orange"></div>
+                <div class="absolute top-0 w-3 h-3 rounded-full bg-brand-orange"></div>
+                <div class="absolute top-0 w-3 h-3 rounded-full bg-brand-orange"></div>
+            </div>
+            <p class="text-gray-500 font-medium animate-pulse">Gerando receitas...</p>
+        </div>
+
+        <div id="results-area" class="hidden">
+            <div class="flex justify-between items-center mb-8">
+                <h3 class="text-2xl font-bold">Sugestões</h3>
+                <button onclick="exportPDF()" class="text-sm text-brand-orange font-medium">
+                    <i class="fa-solid fa-file-pdf"></i> Exportar PDF
+                </button>
+            </div>
+
+            <div id="recipes-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+        </div>
+    </section>
+
+    <script>
+        function goToDashboard() {
+            document.getElementById("landing-page").classList.add("hidden");
+            document.getElementById("dashboard").classList.remove("hidden");
+        }
+
+        function handleEnter(event) {
+            if (event.key === "Enter") {
+                suggestRecipes();
+            }
+        }
+
+        async function suggestRecipes() {
+            const input = document.getElementById("ingredients-input").value.trim();
+            if (!input) return alert("Digite ingredientes!");
+
+            document.getElementById("loading").classList.remove("hidden");
+            document.getElementById("results-area").classList.add("hidden");
+
+            const instruction = `
+                Gere 6 receitas criativas com estes ingredientes: "${input}".
+                Retorne SOMENTE um array JSON puro com o seguinte formato:
+                [
+                    {
+                        "title": "",
+                        "time": "",
+                        "tags": [],
+                        "ingredients": [],
+                        "steps": []
+                    }
+                ]
+            `;
+
+            const response = await fetch('/api/ai', {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ prompt: instruction })
+            });
+
+            const data = await response.json();
+            let raw = data.result || data.choices?.[0]?.message?.content || data.message;
+
+            raw = raw.replace(/```json/g, '').replace(/```/g, '').trim();
+
+            const recipes = JSON.parse(raw);
+            renderRecipes(recipes);
+        }
+
+        function renderRecipes(recipes) {
+            document.getElementById("loading").classList.add("hidden");
+            document.getElementById("results-area").classList.remove("hidden");
+
+            const grid = document.getElementById("recipes-grid");
+            grid.innerHTML = "";
+
+            recipes.forEach(r => {
+                grid.innerHTML += `
+                    <div class="p-6 bg-white rounded-2xl shadow-sm border border-gray-100">
+                        <h4 class="font-bold text-xl mb-2">${r.title}</h4>
+                        <p class="text-sm text-gray-500 mb-3"><i class="fa-regular fa-clock"></i> ${r.time}</p>
+
+                        <h5 class="text-xs font-bold text-brand-orange mb-1">Ingredientes:</h5>
+                        <ul class="text-sm mb-3">
+                            ${r.ingredients.map(i => `<li>• ${i}</li>`).join("")}
+                        </ul>
+
+                        <h5 class="text-xs font-bold text-brand-orange mb-1">Preparo:</h5>
+                        <ol class="text-sm space-y-1">
+                            ${r.steps.map(s => `<li>${s}</li>`).join("")}
+                        </ol>
+                    </div>
+                `;
+            });
+        }
+    </script>
+
+</body>
+</html>
