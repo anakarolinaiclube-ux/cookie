@@ -1,8 +1,10 @@
 {
-  "name": "cookme",
+  "name": "aura-feminina-saas",
   "version": "1.0.0",
-  "type": "module",
+  "scripts": {
+    "start": "node api/index.js" 
+  },
   "dependencies": {
-    "openai": "4.67.2"
+    "openai": "^4.0.0"
   }
 }
