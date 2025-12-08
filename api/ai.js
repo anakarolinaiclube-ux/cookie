@@ -1,92 +1,71 @@
-import OpenAI from 'openai';
+const form = document.getElementById('hypnosis-form');
+const resultArea = document.getElementById('result-area');
+const resultContent = document.getElementById('result-content');
+const loading = document.getElementById('loading');
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-export default async function handler(req, res) {
-  // Apenas permite método POST
-  if (req.method !== 'POST') {
-    return res.status(405).json({ message: 'Method Not Allowed' });
-  }
+    // 1. Coleta de dados
+    const habit = document.getElementById('habit').value;
+    const duration = document.getElementById('duration').value;
+    const intensity = document.getElementById('intensity').value;
 
-  const { energia, foco, estilo } = req.body;
-
-  if (!energia || !foco || !estilo) {
-    return res.status(400).json({ message: 'Dados incompletos' });
-  }
-
-  try {
+    // 2. UI Updates
+    resultArea.style.display = 'none';
+    loading.style.display = 'block';
+    
+    // 3. Criação do Prompt
     const prompt = `
-      Atue como uma especialista em Arquétipos Femininos, Energia e Estilo Pessoal (como uma mentora elegante e sofisticada).
-      
-      Perfil da usuária:
-      1. Sentimento atual: ${energia}
-      2. Foco atual: ${foco}
-      3. Estilo visual preferido: ${estilo}
-
-      Gere um relatório personalizado "Aura Feminina" em formato HTML LIMPO (apenas as tags internas, sem <html> ou <body>).
-      
-      Estrutura obrigatória do HTML:
-      <div class="space-y-6">
-        <div class="border-l-4 border-yellow-600 pl-4">
-          <h3 class="font-serif text-2xl font-bold text-gray-900">Seu Arquétipo: [Nome do Arquétipo Criativo]</h3>
-          <p class="italic text-gray-600">Uma breve descrição poética da essência dela.</p>
-        </div>
-
-        <div>
-          <h4 class="font-bold text-pink-700 uppercase tracking-wide text-xs mb-2">Características de Poder</h4>
-          <p>Descreva 3 pontos fortes baseados nas respostas.</p>
-        </div>
-
-        <div>
-           <h4 class="font-bold text-pink-700 uppercase tracking-wide text-xs mb-2">Ajustes de Energia</h4>
-           <p>Conselho prático para equilibrar o sentimento atual dela (${energia}).</p>
-        </div>
-
-        <div class="bg-gray-50 p-4 rounded-lg">
-           <h4 class="font-bold text-pink-700 uppercase tracking-wide text-xs mb-2">Sugestão de Estilo & Imagem</h4>
-           <p>Dicas de roupas, tecidos ou cores baseadas na preferência (${estilo}).</p>
-        </div>
-
-        <div>
-           <h4 class="font-bold text-pink-700 uppercase tracking-wide text-xs mb-2">Afirmação de Poder</h4>
-           <p class="font-serif text-xl text-gray-800">"Uma frase de afirmação poderosa entre aspas."</p>
-        </div>
+        Atue como um hipnoterapeuta profissional de renome mundial especializado em PNL e reprogramação mental.
+        Crie uma sessão de hipnoterapia guiada em texto completa e imersiva para um paciente que deseja eliminar o hábito de: ${habit}.
         
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-                <h4 class="font-bold text-pink-700 uppercase tracking-wide text-xs mb-2">Ritual de 24h</h4>
-                <ul class="list-disc list-inside text-sm text-gray-600">
-                    <li>Passo 1 simples</li>
-                    <li>Passo 2 simples</li>
-                </ul>
-            </div>
-            <div>
-                 <h4 class="font-bold text-pink-700 uppercase tracking-wide text-xs mb-2">Reset Emocional</h4>
-                 <p class="text-sm text-gray-600">Uma micro-ação para fazer agora.</p>
-            </div>
-        </div>
-      </div>
+        Detalhes do paciente:
+        - Tempo que possui o hábito: ${duration}.
+        - Intensidade do vício/hábito: ${intensity}.
 
-      Tom de voz: Elegante, empático, feminino, "best friend" chique, misterioso.
+        Estrutura da sessão (texto corrido e formatado):
+        1. Indução ao relaxamento profundo (respiração e contagem).
+        2. Aprofundamento do transe.
+        3. Ressignificação do hábito (focando na intensidade ${intensity}).
+        4. Visualização do futuro livre desse hábito.
+        5. Sugestões pós-hipnóticas de controle e aversão ao hábito.
+        6. Despertar suave e energizante.
+
+        O tom deve ser calmo, autoritário mas acolhedor, misterioso e profundamente transformador.
+        Use formatação HTML simples (como <p>, <strong>, <br>) para separar os parágrafos e dar ênfase. Não use Markdown.
     `;
 
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini", // ou gpt-3.5-turbo para economizar
-      messages: [
-        { role: "system", content: "Você é uma mentora de energia feminina sofisticada." },
-        { role: "user", content: prompt },
-      ],
-      max_tokens: 800,
-    });
+    try {
+        // 4. Fetch para API
+        const response = await fetch("/api/ai", {
+            method: "POST",
+            headers: { 
+                "Content-Type": "application/json" 
+            },
+            body: JSON.stringify({ prompt })
+        });
 
-    const htmlContent = completion.choices[0].message.content;
+        if (!response.ok) {
+            throw new Error('Erro na conexão com a DeepMind.');
+        }
 
-    res.status(200).json({ htmlContent });
+        const data = await response.json();
+        
+        // Assumindo que o backend retorna { result: "texto..." } ou direto o texto
+        const text = data.result || data.reply || JSON.stringify(data);
 
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Erro ao gerar relatório' });
-  }
-}
+        // 5. Exibir Resultado
+        resultContent.innerHTML = text;
+        loading.style.display = 'none';
+        resultArea.style.display = 'block';
+
+        // 6. Limpar campos
+        form.reset();
+
+    } catch (error) {
+        console.error(error);
+        loading.style.display = 'none';
+        alert('Ocorreu um erro ao gerar sua sessão. Tente novamente.');
+    }
+});
