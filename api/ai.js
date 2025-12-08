@@ -1,97 +1,71 @@
-const form = document.getElementById('hypnosis-form');
-const resultArea = document.getElementById('result-area');
-const resultContent = document.getElementById('result-content');
-const loading = document.getElementById('loading');
+// api/ai.js
+import OpenAI from 'openai';
 
-// --- Funções de Seleção (Estas estavam faltando no script.js!!!) ---
-window.updateHabit = function (selectElement) {
-    const hiddenInput = document.getElementById('habit');
-    const customInput = document.getElementById('habit-custom-input');
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY, // A chave deve estar nas Variáveis de Ambiente da Vercel
+});
 
-    if (selectElement.value === 'other') {
-        customInput.style.display = 'block';
-        hiddenInput.value = customInput.value;
-        customInput.focus();
-    } else {
-        customInput.style.display = 'none';
-        hiddenInput.value = selectElement.value;
-    }
+export const config = {
+  runtime: 'edge', // Usa Edge Functions para resposta mais rápida
 };
 
-window.updateHabitCustom = function (inputElement) {
-    document.getElementById('habit').value = inputElement.value;
-};
+export default async function handler(req) {
+  if (req.method !== 'POST') {
+    return new Response(JSON.stringify({ error: 'Method not allowed' }), { status: 405 });
+  }
 
-window.selectOption = function (fieldId, value, cardElement) {
-    const hiddenInput = document.getElementById(fieldId);
-    hiddenInput.value = value;
+  try {
+    const { habit, duration, intensity } = await req.json();
 
-    const siblings = cardElement.parentElement.getElementsByClassName('option-card');
-    for (let card of siblings) card.classList.remove('selected');
-
-    cardElement.classList.add('selected');
-};
-// -------------------------------------------------------------------
-
-form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    // 1. Coleta de dados (já corrigida)
-    const habit = document.getElementById('habit').value.trim();
-    const duration = document.getElementById('duration').value.trim();
-    const intensity = document.getElementById('intensity').value.trim();
-
-    // Bloqueia submit vazio
     if (!habit || !duration || !intensity) {
-        alert("Por favor, preencha todas as opções antes de continuar.");
-        return;
+        return new Response(JSON.stringify({ error: 'Missing fields' }), { status: 400 });
     }
 
-    // 2. UI Updates
-    resultArea.style.display = 'none';
-    loading.style.display = 'block';
+    const systemPrompt = `
+      Você é o DeepMind™, um hipnoterapeuta artificial avançado e sofisticado.
+      Seu tom é autoritário, calmo, envolvente e profundamente sensorial.
+      Gere um script completo de auto-hipnose.
+      
+      Estrutura Obrigatória da Resposta (Use tags HTML para formatar):
+      1. <h2>Indução ao Relaxamento</h2>: Foco na respiração e relaxamento muscular.
+      2. <h2>Aprofundamento (Deepening)</h2>: Uma contagem regressiva ou visualização de descida.
+      3. <h2>Ressignificação Neural</h2>: Aborde diretamente o hábito de "${habit}". Use PNL para quebrar o padrão antigo e instalar o novo.
+      4. <h2>Visualização Futura</h2>: O usuário se vendo livre do problema.
+      5. <h2>Sugestões Pós-Hipnóticas</h2>: Gatilhos para manter o efeito acordado.
+      6. <h2>Despertar Suave</h2>: Contagem progressiva para voltar ao estado alerta.
 
-    // 3. Criação do Prompt
-    const prompt = `
-        Atue como um hipnoterapeuta profissional de renome mundial especializado em PNL e reprogramação mental.
-        Crie uma sessão de hipnoterapia guiada completa para eliminar o hábito: ${habit}.
-
-        Detalhes:
-        - Tempo com o hábito: ${duration}
-        - Intensidade: ${intensity}
-
-        Estrutura:
-        1. Indução ao relaxamento
-        2. Aprofundamento
-        3. Ressignificação do hábito
-        4. Visualização futura
-        5. Sugestões pós-hipnóticas
-        6. Despertar suave
-
-        Formatação em HTML simples (<p>, <strong>, <br>), sem Markdown.
+      Formatação:
+      - Use <p> para parágrafos.
+      - Use <strong> para comandos embutidos importantes.
+      - Use <br> para pausas rítmicas.
+      - NÃO use tags <html>, <head> ou <body>. Apenas o conteúdo div.
     `;
 
-    try {
-        // 4. Envio para API
-        const response = await fetch("/api/ai", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ prompt })
-        });
+    const userPrompt = `
+      Crie uma sessão para um paciente com as seguintes características:
+      Hábito a eliminar: ${habit}
+      Tempo do problema: ${duration}
+      Nível de intensidade: ${intensity}
+    `;
 
-        if (!response.ok) throw new Error('Erro na conexão com a DeepMind.');
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o-mini", // ou gpt-3.5-turbo se preferir economia
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userPrompt },
+      ],
+      temperature: 0.7,
+      max_tokens: 1500,
+    });
 
-        const data = await response.json();
-        const text = data.result || data.reply || JSON.stringify(data);
+    const aiContent = completion.choices[0].message.content;
 
-        // 5. Exibir Resultado
-        resultContent.innerHTML = text;
-        loading.style.display = 'none';
-        resultArea.style.display = 'block';
+    return new Response(JSON.stringify({ result: aiContent }), {
+      headers: { 'Content-Type': 'application/json' },
+    });
 
-    } catch (error) {
-        console.error(error);
-        loading.style.display = 'none';
-        alert('Ocorreu um erro ao gerar sua sessão. Tente novamente.');
-    }
-});
+  } catch (error) {
+    console.error(error);
+    return new Response(JSON.stringify({ error: 'Error generating session' }), { status: 500 });
+  }
+}
