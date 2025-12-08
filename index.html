@@ -3,294 +3,432 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aura Feminina™ | Descubra seu Arquétipo</title>
+    <title>DEEPMIND | Reprogramação Mental Premium</title>
     
-    <!-- Google Fonts: Poppins & Inter -->
+    <!-- Fonte Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Configuração de Cores Personalizadas -->
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        serif: ['Poppins', 'sans-serif'],
-                    },
-                    colors: {
-                        brand: {
-                            gold: '#D4AF37', // Dourado
-                            black: '#1A1A1A', // Preto elegante
-                            pink: '#FCE7F3', // Rosa muito claro (bg)
-                            rose: '#BE185D', // Rosa forte (accent)
-                        }
-                    },
-                    animation: {
-                        'fade-in': 'fadeIn 0.8s ease-out',
-                    },
-                    keyframes: {
-                        fadeIn: {
-                            '0%': { opacity: '0', transform: 'translateY(10px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' },
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        body {
-            background-color: #FDFBF7; /* Off-white quente */
-            color: #1A1A1A;
+        /* --- CORE DESIGN SYSTEM --- */
+        :root {
+            --bg-color: #050505;
+            --card-bg: rgba(20, 20, 25, 0.7);
+            --primary: #8b5cf6; /* Roxo vibrante */
+            --primary-dark: #6d28d9;
+            --accent: #a78bfa;
+            --text-main: #ffffff;
+            --text-muted: #9ca3af;
+            --border: rgba(255, 255, 255, 0.08);
+            --glow: 0 0 40px rgba(139, 92, 246, 0.15);
         }
-        .gold-gradient-text {
-            background: linear-gradient(to right, #D4AF37, #FWD700, #D4AF37);
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(139, 92, 246, 0.08), transparent 40%),
+                radial-gradient(circle at 85% 85%, rgba(59, 130, 246, 0.05), transparent 40%);
+        }
+
+        /* --- CONTAINER --- */
+        .container {
+            width: 100%;
+            max-width: 680px;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 50px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+            animation: fadeIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        /* --- HEADER --- */
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 600;
+            letter-spacing: -1px;
+            margin-bottom: 8px;
+            background: linear-gradient(to right, #fff, #a78bfa);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            text-shadow: 0 10px 30px rgba(139, 92, 246, 0.3);
         }
-        .btn-hover {
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            opacity: 0.8;
+        }
+
+        /* --- FORM ELEMENTS --- */
+        .form-section {
+            margin-bottom: 35px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 15px;
+            color: #e5e7eb;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        /* --- SELECT STYLING (MODIFICADO) --- */
+        .custom-select-wrapper {
+            position: relative;
+        }
+
+        select {
+            width: 100%;
+            padding: 18px 20px;
+            /* Fundo escuro para o input fechado */
+            background-color: rgba(20, 20, 25, 0.8); 
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            color: #fff; /* Texto branco */
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            appearance: none; /* Remove seta padrão em alguns browsers */
             transition: all 0.3s ease;
+            outline: none;
+            cursor: pointer;
+            /* Ícone de seta customizado (SVG encodado para branco) */
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23FFFFFF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+            background-position: right 20px top 50%;
+            background-size: 12px auto;
         }
-        .btn-hover:hover {
+
+        select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1);
+        }
+
+        /* --- OPTION STYLING (MODIFICADO) --- */
+        select option {
+            background-color: #141419; /* Fundo escuro para as opções */
+            color: #ffffff;            /* Texto branco */
+            padding: 15px;             /* Tentativa de espaçamento (navegadores variam) */
+            font-size: 1rem;
+        }
+
+        /* Opção Selecionada/Checked */
+        select option:checked {
+            background-color: var(--primary) !important; /* Roxo vibrante */
+            color: #ffffff !important;                   /* Texto Branco */
+            font-weight: 600;
+        }
+
+        /* Hover nas options (Suporte limitado dependendo do OS/Browser) */
+        select option:hover {
+            background-color: #2e2e36; /* Highlight leve */
+        }
+
+        /* --- INPUT TEXT --- */
+        input[type="text"] {
+            width: 100%;
+            padding: 18px 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            outline: none;
+            margin-top: 15px;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--primary);
+            background: rgba(139, 92, 246, 0.05);
+        }
+
+        /* Input extra para "Outro" */
+        #habit-custom-input {
+            display: none;
+            animation: slideDown 0.3s ease;
+        }
+
+        /* --- OPTION CARDS (Radio Replacement) --- */
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+        }
+
+        .option-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            padding: 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            user-select: none;
+        }
+
+        .option-card:hover {
+            background: rgba(255, 255, 255, 0.06);
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px -10px rgba(190, 24, 93, 0.3);
         }
-        /* Loading Spinner */
-        .loader {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #D4AF37;
+
+        .option-card.selected {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: #fff;
+            box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4);
+            font-weight: 600;
+        }
+
+        /* --- BUTTON --- */
+        button {
+            width: 100%;
+            padding: 22px;
+            margin-top: 20px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: #fff;
+            border: none;
+            border-radius: 16px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            box-shadow: 0 10px 30px rgba(109, 40, 217, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 40px rgba(109, 40, 217, 0.6);
+            filter: brightness(1.1);
+        }
+
+        button::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+
+        button:hover::after {
+            left: 100%;
+        }
+
+        /* --- LOADING & RESULT --- */
+        #loading {
+            display: none;
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255,255,255,0.1);
+            border-top: 3px solid var(--primary);
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            margin: 0 auto 20px;
             animation: spin 1s linear infinite;
         }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .loading-text {
+            font-size: 0.85rem;
+            letter-spacing: 3px;
+            color: var(--accent);
+            text-transform: uppercase;
+            animation: pulse 2s infinite;
+        }
+
+        #result-area {
+            display: none;
+            margin-top: 50px;
+            padding-top: 40px;
+            border-top: 1px solid var(--border);
+            animation: slideUp 0.8s ease-out;
+        }
+
+        #result-content {
+            line-height: 2;
+            color: #d4d4d8;
+            font-size: 1.05rem;
+            text-align: justify;
+            font-weight: 300;
+        }
+        
+        #result-content h3 {
+            color: var(--accent);
+            font-weight: 600;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+
+        #result-content strong {
+            color: #fff;
+            font-weight: 600;
+        }
+
+        /* Animations */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); display: block; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .container { padding: 30px 20px; }
+            h1 { font-size: 2.2rem; }
+            .options-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
-<body class="antialiased min-h-screen flex flex-col items-center justify-center p-4">
+<body>
 
-    <!-- Header Simples -->
-    <nav class="absolute top-0 w-full p-6 text-center">
-        <h2 class="font-serif text-xl font-bold tracking-widest text-brand-black">AURA FEMININA™</h2>
-    </nav>
+    <div class="container">
+        <header>
+            <h1>DEEP<span style="font-weight:300">MIND</span></h1>
+            <p class="subtitle">Arquitetura Neural & Hipnoterapia</p>
+        </header>
 
-    <main class="w-full max-w-2xl relative">
-        
-        <!-- TELA 1: LANDING -->
-        <section id="screen-landing" class="text-center animate-fade-in space-y-8">
-            <div class="space-y-4">
-                <span class="text-brand-gold uppercase tracking-[0.2em] text-sm font-semibold">MicroSaaS de Autoconhecimento</span>
-                <h1 class="font-serif text-5xl md:text-6xl font-bold leading-tight text-brand-black">
-                    Revele a sua <br/> <span class="text-brand-rose">Verdadeira Essência</span>
-                </h1>
-                <p class="font-sans text-gray-600 text-lg md:text-xl max-w-lg mx-auto font-light">
-                    Receba um relatório personalizado sobre seu arquétipo, energia e rituais de beleza em segundos através da Inteligência Artificial.
-                </p>
-            </div>
+        <form id="hypnosis-form">
             
-            <button onclick="startAssessment()" class="btn-hover bg-brand-black text-white px-10 py-4 rounded-full font-serif text-lg tracking-wide border border-brand-black hover:bg-white hover:text-brand-black transition-colors">
-                Iniciar Análise ✨
-            </button>
-        </section>
+            <!-- 1. HÁBITO (Select + Input Oculto para o Script) -->
+            <div class="form-section">
+                <label>Qual hábito deseja eliminar?</label>
+                <!-- O script.js espera pegar o valor do ID 'habit'. Usamos type="hidden" para armazenar o valor final. -->
+                <input type="hidden" id="habit" required>
+                
+                <div class="custom-select-wrapper">
+                    <select id="habit-selector" onchange="updateHabit(this)">
+                        <option value="" disabled selected>Selecione uma opção...</option>
+                        <option value="Fumar">Fumar</option>
+                        <option value="Beber">Beber</option>
+                        <option value="Comer compulsivamente">Comer compulsivamente</option>
+                        <option value="Procrastinação">Procrastinação</option>
+                        <option value="Jogos e Apostas">Jogos / Apostas</option>
+                        <option value="Vício em Redes Sociais">Redes sociais / vício digital</option>
+                        <option value="Ansiedade">Ansiedade</option>
+                        <option value="Estresse Emocional">Estresse emocional</option>
+                        <option value="other">Outro...</option>
+                    </select>
+                </div>
+                
+                <input type="text" id="habit-custom-input" placeholder="Digite qual é o hábito..." oninput="updateHabitCustom(this)">
+            </div>
 
-        <!-- TELA 2: FORMULÁRIO -->
-        <section id="screen-form" class="hidden animate-fade-in bg-white p-8 md:p-12 rounded-2xl shadow-xl border border-brand-pink/50">
-            <div class="mb-8 text-center">
-                <h3 class="font-serif text-2xl text-brand-black mb-2">Mapeamento Energético</h3>
-                <p class="text-gray-500 text-sm">Responda com o coração</p>
-                <!-- Barra de Progresso -->
-                <div class="w-full bg-gray-100 h-1 mt-4 rounded-full overflow-hidden">
-                    <div id="progress-bar" class="bg-brand-rose h-full w-1/3 transition-all duration-500"></div>
+            <!-- 2. DURAÇÃO (Visual Radios + Input Oculto) -->
+            <div class="form-section">
+                <label>Há quanto tempo isso te afeta?</label>
+                <!-- Input oculto para o script.js -->
+                <input type="hidden" id="duration" required>
+                
+                <div class="options-grid" id="duration-options">
+                    <div class="option-card" onclick="selectOption('duration', 'Menos de 6 meses', this)">Menos de 6 meses</div>
+                    <div class="option-card" onclick="selectOption('duration', '6 meses a 1 ano', this)">6 meses a 1 ano</div>
+                    <div class="option-card" onclick="selectOption('duration', '1 a 3 anos', this)">1 a 3 anos</div>
+                    <div class="option-card" onclick="selectOption('duration', 'Mais de 3 anos', this)">Mais de 3 anos</div>
+                    <div class="option-card" onclick="selectOption('duration', 'Desde sempre', this)">Desde sempre</div>
                 </div>
             </div>
 
-            <!-- Perguntas -->
-            <div id="question-container" class="space-y-6">
-                <!-- As perguntas serão injetadas via JS -->
+            <!-- 3. INTENSIDADE (Visual Radios + Input Oculto) -->
+            <div class="form-section">
+                <label>Nível de Intensidade</label>
+                <!-- Input oculto para o script.js -->
+                <input type="hidden" id="intensity" required>
+
+                <div class="options-grid" id="intensity-options">
+                    <div class="option-card" onclick="selectOption('intensity', 'Leve', this)">Leve</div>
+                    <div class="option-card" onclick="selectOption('intensity', 'Moderado', this)">Moderado</div>
+                    <div class="option-card" onclick="selectOption('intensity', 'Forte', this)">Forte</div>
+                </div>
             </div>
 
-            <!-- Botão de Ação -->
-            <div class="mt-8 flex justify-end">
-                <button id="next-btn" onclick="nextQuestion()" class="bg-brand-black text-white px-8 py-3 rounded-full font-serif text-sm tracking-wide btn-hover opacity-50 cursor-not-allowed" disabled>
-                    Próximo
-                </button>
-            </div>
-        </section>
+            <button type="submit">Iniciar Reprogramação</button>
+        </form>
 
-        <!-- TELA 3: LOADING -->
-        <section id="screen-loading" class="hidden text-center animate-fade-in">
-            <div class="flex flex-col items-center justify-center space-y-6">
-                <div class="loader"></div>
-                <h3 class="font-serif text-xl text-brand-black">Sintonizando sua energia...</h3>
-                <p class="text-gray-500 animate-pulse">Consultando o oráculo digital</p>
-            </div>
-        </section>
+        <div id="loading">
+            <div class="spinner"></div>
+            <div class="loading-text">Sincronizando Neural Link...</div>
+        </div>
 
-        <!-- TELA 4: RESULTADO -->
-        <section id="screen-result" class="hidden animate-fade-in bg-white rounded-2xl shadow-2xl border-t-4 border-brand-gold overflow-hidden">
-            <div class="bg-brand-black p-8 text-center">
-                <span class="text-brand-gold text-xs uppercase tracking-widest">Relatório Final</span>
-                <h2 class="font-serif text-3xl text-white mt-2">Sua Aura Revelada</h2>
-            </div>
-            
-            <div id="report-content" class="p-8 md:p-12 space-y-6 text-gray-700 leading-relaxed font-sans">
-                <!-- O conteúdo da IA será inserido aqui -->
-            </div>
+        <div id="result-area">
+            <div id="result-content"></div>
+        </div>
+    </div>
 
-            <div class="bg-brand-pink p-6 text-center">
-                <button onclick="location.reload()" class="text-brand-rose font-bold text-sm tracking-widest hover:underline uppercase">
-                    Refazer Leitura
-                </button>
-            </div>
-        </section>
-
-    </main>
-
-    <footer class="absolute bottom-4 text-center w-full">
-        <p class="text-[10px] text-gray-400 uppercase tracking-widest">© Aura Feminina™ AI</p>
-    </footer>
-
-    <!-- Lógica JavaScript -->
+    <!-- SCRIPT DE INTERFACE (UI) -->
     <script>
-        // Dados das Perguntas
-        const questions = [
-            {
-                id: 1,
-                text: "Como você sente sua energia predominante hoje?",
-                options: [
-                    "Exausta, precisando de acolhimento e pausa.",
-                    "Elétrica, ansiosa e com dificuldade de focar.",
-                    "Poderosa, confiante e pronta para conquistar.",
-                    "Fluida, criativa e conectada com a intuição."
-                ]
-            },
-            {
-                id: 2,
-                text: "Qual é o seu foco principal neste momento da vida?",
-                options: [
-                    "Construção de carreira e império pessoal.",
-                    "Harmonia nos relacionamentos e amor.",
-                    "Reconexão espiritual e paz interior.",
-                    "Expressão autêntica e mudança de imagem."
-                ]
-            },
-            {
-                id: 3,
-                text: "Se sua vida fosse um estilo visual, qual seria?",
-                options: [
-                    "Minimalista, estruturado e monocromático (Old Money).",
-                    "Romântico, suave, floral e delicado (Cottagecore).",
-                    "Ousado, vibrante, couro e dourado (Mob Wife/Bold).",
-                    "Místico, tecidos fluidos e tons terrosos (Boho Chic)."
-                ]
-            }
-        ];
-
-        let currentStep = 0;
-        let answers = [];
-
-        // Elementos DOM
-        const screens = {
-            landing: document.getElementById('screen-landing'),
-            form: document.getElementById('screen-form'),
-            loading: document.getElementById('screen-loading'),
-            result: document.getElementById('screen-result')
-        };
-        const questionContainer = document.getElementById('question-container');
-        const progressBar = document.getElementById('progress-bar');
-        const nextBtn = document.getElementById('next-btn');
-
-        // Navegação
-        function showScreen(screenName) {
-            Object.values(screens).forEach(el => el.classList.add('hidden'));
-            screens[screenName].classList.remove('hidden');
-        }
-
-        function startAssessment() {
-            showScreen('form');
-            renderQuestion();
-        }
-
-        function renderQuestion() {
-            const q = questions[currentStep];
-            questionContainer.innerHTML = `
-                <h4 class="font-serif text-xl font-medium mb-6">${q.text}</h4>
-                <div class="space-y-3">
-                    ${q.options.map((opt, index) => `
-                        <label class="flex items-center p-4 border rounded-xl cursor-pointer hover:bg-brand-pink/20 transition-colors group">
-                            <input type="radio" name="answer" value="${opt}" class="w-5 h-5 text-brand-rose focus:ring-brand-rose border-gray-300" onchange="enableNext()">
-                            <span class="ml-3 font-light text-gray-700 group-hover:text-brand-black">${opt}</span>
-                        </label>
-                    `).join('')}
-                </div>
-            `;
+        // Função para atualizar o input hidden do Hábito
+        function updateHabit(selectElement) {
+            const hiddenInput = document.getElementById('habit');
+            const customInput = document.getElementById('habit-custom-input');
             
-            // Atualizar barra de progresso
-            const progress = ((currentStep + 1) / questions.length) * 100;
-            progressBar.style.width = `${progress}%`;
-            
-            // Resetar botão
-            nextBtn.disabled = true;
-            nextBtn.classList.add('opacity-50', 'cursor-not-allowed');
-            nextBtn.innerText = currentStep === questions.length - 1 ? "Gerar Relatório" : "Próximo";
-        }
-
-        function enableNext() {
-            nextBtn.disabled = false;
-            nextBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-        }
-
-        async function nextQuestion() {
-            const selected = document.querySelector('input[name="answer"]:checked');
-            if (!selected) return;
-
-            answers.push(selected.value);
-
-            if (currentStep < questions.length - 1) {
-                currentStep++;
-                renderQuestion();
+            if (selectElement.value === 'other') {
+                customInput.style.display = 'block';
+                hiddenInput.value = customInput.value; 
+                customInput.focus();
             } else {
-                await generateReport();
+                customInput.style.display = 'none';
+                hiddenInput.value = selectElement.value;
             }
         }
 
-        // Integração com Backend
-        async function generateReport() {
-            showScreen('loading');
-
-            const promptData = {
-                energia: answers[0],
-                foco: answers[1],
-                estilo: answers[2]
-            };
-
-            try {
-                const response = await fetch('/api/ai', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(promptData)
-                });
-
-                if (!response.ok) throw new Error('Erro na geração');
-
-                const data = await response.json();
-                
-                // Renderizar o HTML retornado pela IA
-                document.getElementById('report-content').innerHTML = data.htmlContent;
-                
-                showScreen('result');
-
-            } catch (error) {
-                alert("Ops! Houve um erro ao consultar sua aura. Tente novamente.");
-                location.reload();
-            }
+        // Função para atualizar quando digita no campo "Outro"
+        function updateHabitCustom(inputElement) {
+            document.getElementById('habit').value = inputElement.value;
         }
+
+        // Função genérica para os "Radio Buttons" estilizados
+        function selectOption(fieldId, value, cardElement) {
+            document.getElementById(fieldId).value = value;
+            const parent = cardElement.parentElement;
+            const siblings = parent.getElementsByClassName('option-card');
+            for (let card of siblings) { card.classList.remove('selected'); }
+            cardElement.classList.add('selected');
+        }
+
+        document.getElementById('hypnosis-form').addEventListener('submit', () => {
+            setTimeout(() => {
+                document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+                document.getElementById('habit-custom-input').style.display = 'none';
+            }, 1000);
+        });
     </script>
+
+    <script src="script.js" type="module"></script>
 </body>
 </html>
