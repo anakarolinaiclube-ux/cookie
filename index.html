@@ -58,7 +58,6 @@
             animation: fadeIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
-        /* --- HEADER --- */
         header {
             text-align: center;
             margin-bottom: 50px;
@@ -85,7 +84,6 @@
             opacity: 0.8;
         }
 
-        /* --- FORM ELEMENTS --- */
         .form-section {
             margin-bottom: 35px;
         }
@@ -98,7 +96,6 @@
             font-weight: 500;
         }
 
-        /* --- SELECT STYLING (MODIFICADO) --- */
         .custom-select-wrapper {
             position: relative;
         }
@@ -106,18 +103,16 @@
         select {
             width: 100%;
             padding: 18px 20px;
-            /* Fundo escuro para o input fechado */
             background-color: rgba(20, 20, 25, 0.8); 
             border: 1px solid var(--border);
             border-radius: 16px;
-            color: #fff; /* Texto branco */
+            color: #fff;
             font-size: 1rem;
             font-family: 'Poppins', sans-serif;
-            appearance: none; /* Remove seta padrão em alguns browsers */
+            appearance: none;
             transition: all 0.3s ease;
             outline: none;
             cursor: pointer;
-            /* Ícone de seta customizado (SVG encodado para branco) */
             background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23FFFFFF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
             background-repeat: no-repeat;
             background-position: right 20px top 50%;
@@ -129,27 +124,19 @@
             box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1);
         }
 
-        /* --- OPTION STYLING (MODIFICADO) --- */
         select option {
-            background-color: #141419; /* Fundo escuro para as opções */
-            color: #ffffff;            /* Texto branco */
-            padding: 15px;             /* Tentativa de espaçamento (navegadores variam) */
+            background-color: #141419;
+            color: #ffffff;
+            padding: 15px;
             font-size: 1rem;
         }
 
-        /* Opção Selecionada/Checked */
         select option:checked {
-            background-color: var(--primary) !important; /* Roxo vibrante */
-            color: #ffffff !important;                   /* Texto Branco */
+            background-color: var(--primary) !important;
+            color: #ffffff !important;
             font-weight: 600;
         }
 
-        /* Hover nas options (Suporte limitado dependendo do OS/Browser) */
-        select option:hover {
-            background-color: #2e2e36; /* Highlight leve */
-        }
-
-        /* --- INPUT TEXT --- */
         input[type="text"] {
             width: 100%;
             padding: 18px 20px;
@@ -168,13 +155,11 @@
             background: rgba(139, 92, 246, 0.05);
         }
 
-        /* Input extra para "Outro" */
         #habit-custom-input {
             display: none;
             animation: slideDown 0.3s ease;
         }
 
-        /* --- OPTION CARDS (Radio Replacement) --- */
         .options-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -190,8 +175,7 @@
             text-align: center;
             font-size: 0.9rem;
             color: var(--text-muted);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            user-select: none;
+            transition: all 0.3s ease;
         }
 
         .option-card:hover {
@@ -207,7 +191,6 @@
             font-weight: 600;
         }
 
-        /* --- BUTTON --- */
         button {
             width: 100%;
             padding: 22px;
@@ -246,7 +229,6 @@
             left: 100%;
         }
 
-        /* --- LOADING & RESULT --- */
         #loading {
             display: none;
             text-align: center;
@@ -276,7 +258,6 @@
             margin-top: 50px;
             padding-top: 40px;
             border-top: 1px solid var(--border);
-            animation: slideUp 0.8s ease-out;
         }
 
         #result-content {
@@ -286,7 +267,7 @@
             text-align: justify;
             font-weight: 300;
         }
-        
+
         #result-content h3 {
             color: var(--accent);
             font-weight: 600;
@@ -300,14 +281,12 @@
             font-weight: 600;
         }
 
-        /* Animations */
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); display: block; } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes spin { 100% { transform: rotate(360deg); } }
         @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
 
-        /* Responsive */
         @media (max-width: 600px) {
             .container { padding: 30px 20px; }
             h1 { font-size: 2.2rem; }
@@ -325,10 +304,9 @@
 
         <form id="hypnosis-form">
             
-            <!-- 1. HÁBITO (Select + Input Oculto para o Script) -->
+            <!-- 1. HÁBITO -->
             <div class="form-section">
                 <label>Qual hábito deseja eliminar?</label>
-                <!-- O script.js espera pegar o valor do ID 'habit'. Usamos type="hidden" para armazenar o valor final. -->
                 <input type="hidden" id="habit" required>
                 
                 <div class="custom-select-wrapper">
@@ -349,10 +327,9 @@
                 <input type="text" id="habit-custom-input" placeholder="Digite qual é o hábito..." oninput="updateHabitCustom(this)">
             </div>
 
-            <!-- 2. DURAÇÃO (Visual Radios + Input Oculto) -->
+            <!-- 2. DURAÇÃO -->
             <div class="form-section">
                 <label>Há quanto tempo isso te afeta?</label>
-                <!-- Input oculto para o script.js -->
                 <input type="hidden" id="duration" required>
                 
                 <div class="options-grid" id="duration-options">
@@ -364,10 +341,9 @@
                 </div>
             </div>
 
-            <!-- 3. INTENSIDADE (Visual Radios + Input Oculto) -->
+            <!-- 3. INTENSIDADE -->
             <div class="form-section">
                 <label>Nível de Intensidade</label>
-                <!-- Input oculto para o script.js -->
                 <input type="hidden" id="intensity" required>
 
                 <div class="options-grid" id="intensity-options">
@@ -390,9 +366,8 @@
         </div>
     </div>
 
-    <!-- SCRIPT DE INTERFACE (UI) -->
+    <!-- SCRIPT INTERFACE -->
     <script>
-        // Função para atualizar o input hidden do Hábito
         function updateHabit(selectElement) {
             const hiddenInput = document.getElementById('habit');
             const customInput = document.getElementById('habit-custom-input');
@@ -407,12 +382,10 @@
             }
         }
 
-        // Função para atualizar quando digita no campo "Outro"
         function updateHabitCustom(inputElement) {
             document.getElementById('habit').value = inputElement.value;
         }
 
-        // Função genérica para os "Radio Buttons" estilizados
         function selectOption(fieldId, value, cardElement) {
             document.getElementById(fieldId).value = value;
             const parent = cardElement.parentElement;
@@ -420,13 +393,6 @@
             for (let card of siblings) { card.classList.remove('selected'); }
             cardElement.classList.add('selected');
         }
-
-        document.getElementById('hypnosis-form').addEventListener('submit', () => {
-            setTimeout(() => {
-                document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
-                document.getElementById('habit-custom-input').style.display = 'none';
-            }, 1000);
-        });
     </script>
 
     <script src="script.js" type="module"></script>
