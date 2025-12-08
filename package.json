@@ -1,10 +1,9 @@
 {
-  "name": "aura-feminina-saas",
+  "name": "deepmind",
   "version": "1.0.0",
+  "type": "module",
   "scripts": {
-    "start": "node api/index.js" 
+    "start": "vercel dev"
   },
-  "dependencies": {
-    "openai": "^4.0.0"
-  }
+  "dependencies": {}
 }
