@@ -84,18 +84,28 @@
         .hypnosis-content p { margin-bottom: 1rem; line-height: 1.8; color: #cbd5e1; }
         .hypnosis-content strong { color: #a855f7; }
         
-        /* CORREÇÃO AQUI: !important garante que o hidden vença o flex */
+        /* Utilitários de visibilidade e animação */
         .hidden-screen { display: none !important; }
-        
         .fade-in { animation: fadeIn 0.8s ease-out forwards; }
-        
+        .fade-out { animation: fadeOut 0.5s ease-out forwards; }
+
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; visibility: hidden; }
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-center items-center p-4">
+
+    <!-- Áudio de Fundo (Theta Waves / Dark Ambient) -->
+    <!-- Fonte: Pixabay (Royalty Free) -->
+    <audio id="ambient-audio" loop>
+        <source src="https://cdn.pixabay.com/download/audio/2022/02/07/audio_1829e71048.mp3" type="audio/mp3">
+    </audio>
 
     <!-- ================= TELA 1: HERO ================= -->
     <main id="screen-hero" class="text-center max-w-4xl w-full fade-in relative z-10">
@@ -203,7 +213,7 @@
         </div>
     </main>
 
-    <!-- ================= TELA DE LOADING (CORRIGIDA) ================= -->
+    <!-- ================= TELA DE LOADING ================= -->
     <div id="loading-screen" class="fixed inset-0 bg-deep-900 z-50 hidden-screen justify-center items-center flex-col">
         <div class="relative w-24 h-24">
             <div class="absolute inset-0 border-4 border-violet-900 rounded-full"></div>
@@ -216,9 +226,21 @@
 
     <!-- ================= TELA 3: RESULTADO ================= -->
     <main id="screen-result" class="hidden-screen w-full max-w-3xl fade-in pb-12">
-        <div class="glass p-8 md:p-12 rounded-2xl shadow-[0_0_50px_rgba(139,92,246,0.15)] border border-white/10">
+        <div class="glass p-8 md:p-12 rounded-2xl shadow-[0_0_50px_rgba(139,92,246,0.15)] border border-white/10 relative">
             
-            <div class="flex justify-between items-center mb-8 border-b border-white/10 pb-4">
+            <!-- Botão de Ativar Som -->
+            <button id="btn-audio-toggle" onclick="activateAudio()" class="w-full mb-8 py-3 bg-white/5 border border-neon-purple/50 rounded-lg text-neon-glow flex items-center justify-center gap-3 hover:bg-neon-purple/10 transition-all group">
+                <span class="relative flex h-3 w-3">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-neon-purple opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-3 w-3 bg-violet-500"></span>
+                </span>
+                <span class="font-medium tracking-wide text-sm">ATIVAR SOM AMBIENTE (BINAURAL)</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-neon-purple" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                </svg>
+            </button>
+
+            <div class="flex justify-between items-center mb-6 border-b border-white/10 pb-4">
                 <h2 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-violet-300">Sessão Gerada</h2>
                 <button onclick="location.reload()" class="text-xs text-slate-400 hover:text-white transition-colors flex items-center gap-1">
                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
@@ -226,7 +248,9 @@
                 </button>
             </div>
 
-            <div id="result-content" class="hypnosis-content text-slate-300 text-justify"></div>
+            <div id="result-content" class="hypnosis-content text-slate-300 text-justify">
+                <!-- Conteúdo IA -->
+            </div>
 
             <div class="mt-10 pt-6 border-t border-white/5 text-center">
                 <p class="text-xs text-slate-600 italic">Recomenda-se ler em voz baixa ou gravar este script para ouvir diariamente.</p>
@@ -240,6 +264,8 @@
         const screenResult = document.getElementById('screen-result');
         const loadingScreen = document.getElementById('loading-screen');
         const otherInput = document.getElementById('habit-other');
+        const audioEl = document.getElementById('ambient-audio');
+        const btnAudio = document.getElementById('btn-audio-toggle');
 
         function goToForm() {
             screenHero.classList.add('hidden-screen');
@@ -256,6 +282,22 @@
             }
         }
 
+        // Função para ativar o áudio e esconder o botão
+        function activateAudio() {
+            audioEl.volume = 0.3; // 30% do volume para não atrapalhar
+            audioEl.play().then(() => {
+                // Adiciona classe de animação para sumir
+                btnAudio.classList.add('fade-out');
+                // Remove do DOM após a animação
+                setTimeout(() => {
+                    btnAudio.style.display = 'none';
+                }, 500);
+            }).catch(error => {
+                console.error("Erro ao reproduzir áudio:", error);
+                alert("Não foi possível iniciar o áudio automaticamente. Verifique as permissões do navegador.");
+            });
+        }
+
         async function handleGenerate(e) {
             e.preventDefault();
 
@@ -269,10 +311,9 @@
             const duration = document.querySelector('input[name="duration"]:checked').value;
             const intensity = document.querySelector('input[name="intensity"]:checked').value;
 
-            // Transição para Loading
             screenForm.classList.add('hidden-screen');
             loadingScreen.classList.remove('hidden-screen');
-            loadingScreen.style.display = 'flex'; // Força o display flex
+            loadingScreen.style.display = 'flex';
 
             const steps = ["Mapeando gatilhos emocionais...", "Construindo sugestões pós-hipnóticas...", "Finalizando roteiro neural..."];
             let stepIndex = 0;
@@ -294,7 +335,7 @@
 
                 clearInterval(interval);
                 loadingScreen.classList.add('hidden-screen');
-                loadingScreen.style.display = 'none'; // Reseta o display
+                loadingScreen.style.display = 'none';
 
                 if (response.ok && data.result) {
                     document.getElementById('result-content').innerHTML = data.result;
